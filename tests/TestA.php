@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Yunzhiyike\Test;
 
 use PHPUnit\Framework\TestCase;
+use Yunzhiyike\ChatGpt\ChatGptFactory;
 
 /**
  * @internal
@@ -17,6 +18,6 @@ class TestA extends TestCase
 {
     public function test()
     {
-        var_dump(111111);
+       ChatGptFactory::getInstance()->gptV1->sendText("你好吗？");
     }
 }
