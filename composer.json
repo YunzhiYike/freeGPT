@@ -1,0 +1,33 @@
+{
+    "name": "yunzhiyike/chat-gpt",
+    "description": "This is an free chat-gpt sdk",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Yunzhiyike\\ChatGpt\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Yunzhiyike\\Test\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "云知易客",
+            "email": "wuaiyiyun2022@163.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^7.9"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.58",
+        "phpunit/phpunit": "^10.5"
+    },
+    "scripts": {
+        "cs-fix": "php-cs-fixer fix $1",
+        "test": "phpunit -c phpunit.xml --colors=always"
+    }
+}
