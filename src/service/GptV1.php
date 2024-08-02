@@ -7,23 +7,22 @@ declare(strict_types=1);
 
 namespace Yunzhiyike\ChatGpt\service;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
-use stdClass;
-use Yunzhiyike\ChatGpt\Request;
+use Yunzhiyike\ChatGpt\constans\GptV1Model;
 
 class GptV1
 {
-    public const URL = 'https://itulpl.aitianhu1.top/api/please-donot-reverse-engineering-me-thank-you';
-    public const REQUEST_HEADER = [
+    protected const URL = 'https://lite.icoding.ink/api/v1/gpt/message';
+
+    protected const REQUEST_HEADER = [
         'Accept' => 'application/json, text/plain, */*',
         'Accept-Language' => 'zh,en-GB;q=0.9,en-US;q=0.8,en;q=0.7,zh-CN;q=0.6',
         'Cache-Control' => 'no-cache',
         'Content-Type' => 'application/json',
-        'Cookie' => 'sl-session=MHWZM6V5rGadTeyYA8rArA==; sl_jwt_session=nm+dMT42q2YqHwOxpw5bcg==; cdn=aitianhu; SERVERID=srv99n4|Zqsoj',
-        'Origin' => 'https://itulpl.aitianhu1.top',
         'Pragma' => 'no-cache',
-        'Priority' => 'u=1, i',
-        'Referer' => 'https://itulpl.aitianhu1.top/',
+        'Referer' => 'https://lite.icoding.ink/',
+        'Origin' => 'https://lite.icoding.ink',
         'Sec-CH-UA' => '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
         'Sec-CH-UA-Mobile' => '?0',
         'Sec-CH-UA-Platform' => '"macOS"',
@@ -33,25 +32,31 @@ class GptV1
         'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
     ];
 
-    protected Request $request;
+    protected Client $client;
 
     public function __construct()
     {
-        $this->request = new Request(60);
+        $this->client = new Client(['timeout' => 60]);
     }
 
-    public function sendText(string $text, string $proxy = ''): void
+    public function sendText(string $text, string $model = GptV1Model::GTP_4O, string $proxy = ''): string
     {
         $data = [
-            'prompt' => "{$text}\n",
-            'options' => new stdClass(),
-            'model' => 'gpt-3.5-turbo',
-            'OPENAI_API_KEY' => 'sk-AItianhuFreeForEveryone',
-            'systemMessage' => "You are an AI assistant, a large language model trained. Follow the user's instructions carefully. Respond using markdown.",
-            'temperature' => 0.8,
-            'top_p' => 1,
+            'model' => $model,
+            'chatId' => '-1',
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $text,
+                    'time' => date('Y/m/d H:i:s'),
+                    'attachments' => [],
+                ],
+            ],
+            'plugins' => [],
+            'systemPrompt' => '',
+            'temperature' => 0.5,
         ];
-        $response = $this->request->post(
+        $response = $this->client->post(
             self::URL,
             [
                 RequestOptions::HEADERS => self::REQUEST_HEADER,
@@ -60,6 +65,17 @@ class GptV1
                 'proxy' => $proxy,
             ]
         );
-        var_dump($response->getBody()->getContents());
+        $data = $response->getBody()->getContents();
+        $response = '';
+        $lines = explode("\n", trim($data));
+        foreach ($lines as $line) {
+            if (str_starts_with($line, 'data: ')) {
+                $pattern = '/data: "(.*?)"/';
+                preg_match($pattern, $line, $matches);
+                $result = $matches[1];
+                $response .= $result;
+            }
+        }
+        return $response;
     }
 }

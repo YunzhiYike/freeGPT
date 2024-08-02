@@ -27,7 +27,6 @@
         "phpunit/phpunit": "^10.5"
     },
     "scripts": {
-        "cs-fix": "php-cs-fixer fix $1",
-        "test": "phpunit -c phpunit.xml --colors=always"
+        "cs-fix": "php-cs-fixer fix $1"
     }
 }
