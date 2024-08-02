@@ -72,8 +72,9 @@ class GptV1
             if (str_starts_with($line, 'data: ')) {
                 $pattern = '/data: "(.*?)"/';
                 preg_match($pattern, $line, $matches);
-                $result = $matches[1];
-                $response .= $result;
+                if (isset($matches[1])) {
+                    $response .= $matches[1];
+                }
             }
         }
         return $response;

@@ -1,6 +1,9 @@
 # freeGPT
 免费chatGPT接口
 
+
+> 镜像仓库设置 `composer config -g repo.packagist composer https://packagist.org`
+
 # 使用方法
 ```php
 <?php
